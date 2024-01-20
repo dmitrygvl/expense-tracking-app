@@ -48,6 +48,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.0",
     "mini-css-extract-plugin": "^2.7.7",
+    "node-polyfill-webpack-plugin": "^3.0.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.4",
     "react-select-event": "^5.5.1",
@@ -57,13 +58,11 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   },
-  "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
-  },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
-    "firebase": "^10.7.1",
+    "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.3.2",
+    "firebase": "^10.7.2",
     "react": "^18.2.0",
     "react-date-range": "^2.0.0-alpha.4",
     "react-dom": "^18.2.0",
@@ -74,5 +73,12 @@
     "react-select": "^5.8.0",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint . --cache --fix",
+      "prettier --write"
+    ],
+    "*.{js,css,md,yml,json,html}": "prettier --write"
   }
 }

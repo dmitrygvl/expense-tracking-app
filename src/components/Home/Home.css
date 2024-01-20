@@ -1,0 +1,7 @@
+.home {
+  text-align: center;
+  padding: 20px;
+}
+.home > h1 {
+  margin-bottom: 20px;
+}
