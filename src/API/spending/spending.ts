@@ -1,4 +1,4 @@
-type TSpendingOption = {
+type TSpending = {
   id: string;
   date: number;
   category: string;
@@ -17,7 +17,7 @@ class Spending {
 
   payment: number;
 
-  constructor(options: TSpendingOption) {
+  constructor(options: TSpending) {
     const { id, date, category, subCategory, payment } = options;
     this.id = id;
     this.date = date;

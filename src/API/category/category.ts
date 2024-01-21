@@ -1,26 +1,19 @@
-type TCategoryOptions = {
+import { v4 } from 'uuid';
+
+export interface ICategory {
   id: string;
   name: string;
-  subCategories: string[];
+  subcategories: string[];
   description: string;
-};
-
-class Category {
-  id: string;
-
-  name: string;
-
-  subCategories: string[];
-
-  description: string;
-
-  constructor(options: TCategoryOptions) {
-    const { id, name, subCategories, description } = options;
-    this.id = id;
-    this.name = name;
-    this.subCategories = subCategories;
-    this.description = description;
-  }
 }
 
-export default Category;
+export const createCategory = (
+  name: string,
+  description: string,
+  subcategories: string[],
+): ICategory => ({
+  id: v4(),
+  name,
+  description,
+  subcategories,
+});

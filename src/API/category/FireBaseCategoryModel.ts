@@ -1,6 +1,6 @@
-import { Database } from 'firebase/database';
-import Category from './category';
-import CategoryModel from './categoryMode';
+import { Database, ref, set, get, child } from 'firebase/database';
+import { ICategory } from './category';
+import CategoryModel from './categoryModel';
 
 class FirebaseCategoryModel extends CategoryModel {
   private db;
@@ -20,12 +20,42 @@ class FirebaseCategoryModel extends CategoryModel {
     this.collectionName = collectionName;
   }
 
-  async getAll(userId: string): Promise<Category[] | null> {
-    return null;
+  async getAll(userId: string): Promise<ICategory[] | null> {
+    try {
+      const dbRef = ref(this.db);
+      const snapshot = await get(
+        child(
+          dbRef,
+          `${this.parentCollectionName}${userId}${this.collectionName}`,
+        ),
+      );
+      if (snapshot.exists()) {
+        return snapshot.val();
+      }
+
+      throw new Error('No categories in Firebase!');
+    } catch (e) {
+      console.log((e as Error).message);
+      return null;
+    }
   }
 
-  async create(userId: string, category: Category): Promise<string | null> {
-    return null;
+  async create(userId: string, category: ICategory): Promise<string | null> {
+    try {
+      await set(
+        ref(
+          this.db,
+          `${this.parentCollectionName}${userId}${`${this.collectionName}/`}${
+            category.id
+          }`,
+        ),
+        category,
+      );
+
+      return category.id;
+    } catch (e) {
+      return null;
+    }
   }
 
   async delete(userId: string, id: string): Promise<boolean> {

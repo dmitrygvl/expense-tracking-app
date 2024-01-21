@@ -3,12 +3,12 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../../store/slices/authSlice';
-import { auth, db } from '../../API/firebase';
+import { auth, userStorage, db } from '../../API/firebase';
 import './Auth.css';
+import { addUser } from '../../store/slices/userSlice';
 
 type TAuthMode = 'login' | 'signup';
 
@@ -35,32 +35,44 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
 
     if (mode === 'login') {
       signInWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           const { user } = userCredential;
-          dispatch(logIn({ uid: user.uid, name }));
-          navigate('/');
+          localStorage.setItem('@djess-v/cost-management', user.uid);
+          const profile = await userStorage.getUser(user.uid);
+
+          if (profile) {
+            dispatch(logIn());
+            dispatch(addUser({ uid: profile.uid, name: profile.name }));
+            navigate('/');
+          }
         })
         .catch((err) => {
           setError({
             state: true,
-            message: 'There is no user with this login',
+            message: 'No user with this data was found! Register!',
           });
         });
     } else {
       createUserWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           const { user } = userCredential;
-          dispatch(logIn({ uid: user.uid, name }));
-          set(ref(db, `users/ + user.uid`), {
-            name,
-          });
-          navigate('/');
+          localStorage.setItem('@dimtrygvl/expense-tracking-app', user.uid);
+          dispatch(logIn());
+          dispatch(addUser({ uid: user.uid, name }));
+          const userId = await userStorage.createUser(user.uid, name);
+
+          if (userId) {
+            navigate('/');
+          } else {
+            throw new Error(
+              'Something went wrong with the profile creation! Try again!',
+            );
+          }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           setError({
             state: true,
-            message:
-              'Something went wrong. Please try to create your account again.',
+            message: err.message,
           });
         });
     }
@@ -74,45 +86,14 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
     setError({ state: false, message: '' });
   };
 
-  // return (
-  //   <div className="_container">
-  //     <div className="auth">
-  //       <h1 className='auth__title'>
-  //         {mode === 'login' ? 'Log In' : 'Sign Up'}</h1>
-  //       <form
-  //         className='auth__form form-auth'
-  //         onSubmit={onFormSubmit}>
-  //         <input
-  //           type="text"
-  //           placeholder="Name"
-  //           value={name}
-  //           onChange={(ev) => setName(ev.target.value)}
-  //         />
-  //         <input
-  //           type="email"
-  //           placeholder="Email"
-  //           value={email}
-  //           onChange={(ev) => setEmail(ev.target.value)}
-  //         />
-  //         <input
-  //           type="password"
-  //           placeholder="Password"
-  //           value={pass}
-  //           onChange={(ev) => setPass(ev.target.value)}
-  //           />
-  //           </div>
-  //           </form>
-  //   </div>
-  // )
-
   return (
     <div className="_container">
       <div className="auth">
-        <h1 className="auth_title">
-          {mode === 'login' ? 'Log In' : 'Sign Up'}
+        <h1 className="auth__title">
+          {mode === 'login' ? 'Log In' : 'Sign up'}
         </h1>
         <form
-          className="auth__form form=auth"
+          className="auth__form form-auth"
           onSubmit={onFormSubmit}
           name="form-auth"
         >
@@ -123,36 +104,35 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
               </label>
               <input
                 className="auth__form_input _input"
-                onChange={(ev) => setName(ev.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 value={name}
                 name="name"
+                id="name"
                 minLength={3}
                 required
-                type="text"
               />
             </>
           )}
           <label className="auth__form_label" htmlFor="email">
-            Email:
+            E-mail:
           </label>
           <input
             className="auth__form_input _input"
             type="email"
-            onChange={(ev) => setEmail(ev.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             value={email}
             name="email"
             id="email"
             minLength={6}
             required
           />
-
           <label className="auth__form_label" htmlFor="password">
             Password:
           </label>
           <input
             className="auth__form_input _input"
             type="password"
-            onChange={(ev) => setPass(ev.target.value)}
+            onChange={(e) => setPass(e.target.value)}
             value={pass}
             name="password"
             id="password"
@@ -162,16 +142,13 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
 
           {mode === 'signup' && (
             <>
-              <label
-                className="auth__form_input _input"
-                htmlFor="repeat-password"
-              >
-                Repeat password
+              <label className="auth__form_label" htmlFor="repeat-password">
+                Repeat password:
               </label>
               <input
                 className="auth__form_input _input"
                 type="password"
-                onChange={(ev) => setPassRepeat(ev.target.value)}
+                onChange={(e) => setPassRepeat(e.target.value)}
                 value={passRepeat}
                 name="repeatPassword"
                 id="repeat-password"
@@ -182,10 +159,10 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
           )}
 
           {mode === 'signup' && isRepeatPassNotMatch && (
-            <p className="auth__form_error">Password entry does not match</p>
+            <p className="auth__form_error">Passwords do not match</p>
           )}
 
-          {error.state && <p className="auth__form_erro">{error.message}</p>}
+          {error.state && <p className="auth__form_error">{error.message}</p>}
 
           <div className="form-auth__buttons">
             <button
@@ -201,7 +178,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
               type="submit"
               disabled={mode === 'signup' && isRepeatPassNotMatch}
             >
-              {mode === 'signup' && isRepeatPassNotMatch}
+              {mode === 'signup' ? 'Create' : 'Log in'}
             </button>
           </div>
         </form>

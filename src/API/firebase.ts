@@ -1,9 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
-import FirebaseCategoryModel from './category/FireBaseCategoryModel';
-import FirebaseSpendingModel from './spending/fireBaseSpendingModel';
-import 'dotenv/config';
+import FirebaseCategoryModel from './category/firebaseCategoryModel';
+import FirebaseSpendingModel from './spending/firebaseSpendingModel';
+import FirebaseUserModel from './user/firebaseUserModel';
+
+// import 'dotenv/config';
 
 const firebaseConfig = {
   // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -20,11 +22,10 @@ const firebaseConfig = {
   appId: '1:693245495790:web:a223e539ff79535bfce6ff',
 };
 
-console.log(firebaseConfig);
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const userStorage = new FirebaseUserModel(db, 'users/', 'profiles');
 const categoryStorage = new FirebaseCategoryModel(db, 'users', 'categories');
 const spendingStorage = new FirebaseSpendingModel(db, 'users', 'spendings');
 
@@ -32,4 +33,4 @@ const auth = getAuth();
 
 export const isUserSignedIn = () => !!getAuth().currentUser;
 
-export { db, auth, categoryStorage, spendingStorage };
+export { db, auth, categoryStorage, spendingStorage, userStorage };

@@ -1,23 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface IUser {
-  uid: string;
-  name: string;
-}
-
-const initialState: Partial<IUser> = {};
+const initialState = false;
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logIn: (state, action: PayloadAction<IUser>) => {
-      state = action.payload;
+    logIn: (state) => {
+      state = true;
       return state;
     },
 
     logOut: (state) => {
-      state = {};
+      state = false;
       return state;
     },
   },

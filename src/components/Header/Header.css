@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 900px) {
   .header-container {
     flex-direction: column;
     justify-content: center;
@@ -49,12 +49,13 @@
   color: #fdc781;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 440px) {
   .header-container__title {
     font-size: 30px;
   }
-  .nav-header__link {
-    padding: 10px 10px;
-    font-size: 0.8rem;
+
+  .nav-header {
+    display: flex;
+    flex-wrap: wrap;
   }
 }
