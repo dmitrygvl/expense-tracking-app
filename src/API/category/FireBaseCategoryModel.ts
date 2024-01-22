@@ -1,6 +1,102 @@
-import { Database, ref, set, get, child } from 'firebase/database';
+import { Database, ref, set, get, child, remove } from 'firebase/database';
 import { ICategory } from './category';
-import CategoryModel from './categoryModel';
+import {
+  IConvertCategory,
+  convertCategoriesForStore,
+} from '../../utils/convertCategory';
+
+// abstract class CategoryModel {
+//   abstract getAll(userId: string): Promise<ICategory[] | null>;
+
+//   abstract create(userId: string, category: ICategory): Promise<string | null>;
+
+//   abstract delete(userId: string, id: string): Promise<boolean>;
+// }
+
+// class FirebaseCategoryModel extends CategoryModel {
+//   private db;
+
+//   private parentCollectionName;
+
+//   private collectionName;
+
+//   constructor(
+//     db: Database,
+//     parentCollectionName: string,
+//     collectionName: string,
+//   ) {
+//     super();
+//     this.db = db;
+//     this.parentCollectionName = parentCollectionName;
+//     this.collectionName = collectionName;
+//   }
+
+//   async getAll(userId: string): Promise<ICategory[] | null> {
+//     try {
+//       const dbRef = ref(this.db);
+//       const snapshot = await get(
+//         child(
+//           dbRef,
+//           `${this.parentCollectionName}${userId}${this.collectionName}`,
+//         ),
+//       );
+//       if (snapshot.exists()) {
+//         return snapshot.val();
+//       }
+
+//       throw new Error('No categories in Firebase.');
+//     } catch (e) {
+//       console.log((e as Error).message);
+//       return null;
+//     }
+//   }
+
+//   async create(uid: string, category: ICategory): Promise<string | null> {
+//     try {
+//       await set(
+//         ref(
+//           this.db,
+//           `${this.parentCollectionName}${uid}${`${this.collectionName}/`}${
+//             category.id
+//           }`,
+//         ),
+//         category,
+//       );
+
+//       return category.id;
+//     } catch (e) {
+//       return null;
+//     }
+//   }
+
+//   async delete(uid: string, id: string): Promise<boolean> {
+//     try {
+//       await remove(
+//         ref(
+//           this.db,
+//           `${
+//             this.parentCollectionName
+//           }${uid}${`${this.collectionName}/`}${id}`,
+//         ),
+//       );
+
+//       return true;
+//     } catch (e) {
+//       console.log((e as Error).message);
+//       return false;
+//     }
+//   }
+//   }
+
+// export default FirebaseCategoryModel;
+
+abstract class CategoryModel {
+  abstract getAll(userId: string): Promise<IConvertCategory[] | null>;
+
+  abstract create(userId: string, category: ICategory): Promise<string | null>;
+
+  abstract delete(userId: string, id: string): Promise<boolean>;
+}
 
 class FirebaseCategoryModel extends CategoryModel {
   private db;
@@ -20,7 +116,7 @@ class FirebaseCategoryModel extends CategoryModel {
     this.collectionName = collectionName;
   }
 
-  async getAll(userId: string): Promise<ICategory[] | null> {
+  async getAll(userId: string): Promise<IConvertCategory[] | null> {
     try {
       const dbRef = ref(this.db);
       const snapshot = await get(
@@ -30,7 +126,7 @@ class FirebaseCategoryModel extends CategoryModel {
         ),
       );
       if (snapshot.exists()) {
-        return snapshot.val();
+        return convertCategoriesForStore(snapshot.val());
       }
 
       throw new Error('No categories in Firebase!');
@@ -54,16 +150,27 @@ class FirebaseCategoryModel extends CategoryModel {
 
       return category.id;
     } catch (e) {
+      console.log((e as Error).message);
       return null;
     }
   }
 
   async delete(userId: string, id: string): Promise<boolean> {
-    return false;
-  }
+    try {
+      await remove(
+        ref(
+          this.db,
+          `${
+            this.parentCollectionName
+          }${userId}${`${this.collectionName}/`}${id}`,
+        ),
+      );
 
-  async deleteAll(userId: string): Promise<boolean> {
-    return false;
+      return true;
+    } catch (e) {
+      console.log((e as Error).message);
+      return false;
+    }
   }
 }
 

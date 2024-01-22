@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface IUser {
-  uid: string;
-  name: string;
+  uid: string | undefined;
+  name: string | undefined;
 }
-const initialState: Partial<IUser> = {};
+const initialState: IUser = {
+  uid: undefined,
+  name: undefined,
+};
 
 const userSlice = createSlice({
   name: 'user',
@@ -16,7 +19,10 @@ const userSlice = createSlice({
     },
 
     deleteUser: (state) => {
-      state = {};
+      state = {
+        uid: undefined,
+        name: undefined,
+      };
       return state;
     },
   },

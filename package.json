@@ -1,5 +1,5 @@
 {
-  "name": "expensetackingapp",
+  "name": "expense-tracking-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -65,6 +65,7 @@
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.3.2",
     "firebase": "^10.7.2",
+    "lucide-react": "^0.314.0",
     "react": "^18.2.0",
     "react-date-range": "^2.0.0-alpha.4",
     "react-dom": "^18.2.0",

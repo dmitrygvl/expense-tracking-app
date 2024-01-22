@@ -4,17 +4,99 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { logIn } from '../../store/slices/authSlice';
-import { auth, userStorage, db } from '../../API/firebase';
-import './Auth.css';
+import {
+  auth,
+  userStorage,
+  spendingStorage,
+  categoryStorage,
+} from '../../API/firebase';
 import { addUser } from '../../store/slices/userSlice';
+import { addCategories } from '../../store/slices/categoriesSlice';
+import { addSpendings } from '../../store/slices/spendingSlice';
+import { IUser } from '../../API/user/firebaseUserModel';
+import { IAppDispatch } from '../../store/store';
+import './Auth.css';
 
-type TAuthMode = 'login' | 'signup';
+type IAuthMode = 'login' | 'signUp';
+
+interface IRegData {
+  name: string;
+  email: string;
+  pass: string;
+  passRepeat: string;
+}
 
 interface IAuthProps {
-  mode: TAuthMode;
+  mode: IAuthMode;
 }
+
+const initialRegData: IRegData = {
+  name: '',
+  email: '',
+  pass: '',
+  passRepeat: '',
+};
+
+const authObj = {
+  signUp: createUserWithEmailAndPassword,
+  login: signInWithEmailAndPassword,
+};
+
+const uidSaveToLocalStorage = (uid: string) => {
+  localStorage.setItem('@dmitrygvl/expense-tracking-app', uid);
+};
+
+const getInitialDataForStore = async (uid: string, dispatch: IAppDispatch) => {
+  const categories = await categoryStorage.getAll(uid);
+
+  if (categories) {
+    dispatch(addCategories(categories));
+  }
+
+  const spendings = await spendingStorage.getAll(uid);
+
+  if (spendings) {
+    dispatch(addSpendings(spendings));
+  }
+};
+
+const userAuth = async (
+  mode: IAuthMode,
+  regData: IRegData,
+  errorCb: React.Dispatch<
+    React.SetStateAction<{ state: boolean; message: string }>
+  >,
+  navigate: NavigateFunction,
+  dispatch: IAppDispatch,
+) => {
+  try {
+    let profile: IUser | null = null;
+
+    const { user } = await authObj[mode](auth, regData.email, regData.pass);
+
+    if (mode === 'login') {
+      profile = await userStorage.getUser(user.uid);
+    } else {
+      profile = await userStorage.createUser(user.uid, regData.name);
+    }
+
+    if (profile) {
+      uidSaveToLocalStorage(profile.uid);
+      dispatch(addUser(profile));
+
+      getInitialDataForStore(profile.uid, dispatch);
+    }
+
+    navigate(`${PREFIX}/`);
+  } catch (err) {
+    errorCb({
+      state: true,
+      message: (err as unknown as Error).message,
+    });
+  }
+};
 
 const Auth: FC<IAuthProps> = ({ mode }) => {
   const [name, setName] = useState('');
@@ -97,7 +179,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
           onSubmit={onFormSubmit}
           name="form-auth"
         >
-          {mode === 'signup' && (
+          {mode === 'signUp' && (
             <>
               <label className="auth__form_label" htmlFor="name">
                 Name:
@@ -140,7 +222,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             required
           />
 
-          {mode === 'signup' && (
+          {mode === 'signUp' && (
             <>
               <label className="auth__form_label" htmlFor="repeat-password">
                 Repeat password:
@@ -158,7 +240,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             </>
           )}
 
-          {mode === 'signup' && isRepeatPassNotMatch && (
+          {mode === 'signUp' && isRepeatPassNotMatch && (
             <p className="auth__form_error">Passwords do not match</p>
           )}
 
@@ -176,9 +258,9 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             <button
               className="form-auth__buttons_button _button"
               type="submit"
-              disabled={mode === 'signup' && isRepeatPassNotMatch}
+              disabled={mode === 'signUp' && isRepeatPassNotMatch}
             >
-              {mode === 'signup' ? 'Create' : 'Log in'}
+              {mode === 'signUp' ? 'Create' : 'Log in'}
             </button>
           </div>
         </form>

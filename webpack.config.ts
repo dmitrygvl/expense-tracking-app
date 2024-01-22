@@ -8,12 +8,13 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import 'dotenv/config';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
+import pkg from './package.json';
 
 type Mode = 'none' | 'production' | 'development' | undefined;
 
 const NODE_ENV: Mode = process.env.NODE_ENV as Mode;
 
-// const PREFIX = NODE_ENV === "production" ? "/expense-tracking-app" : "";
+const PREFIX = NODE_ENV === 'production' ? `/${pkg.name}` : '';
 
 const config: webpack.Configuration = {
   entry: { index: resolve(__dirname, './src/index.tsx') },
@@ -31,7 +32,7 @@ const config: webpack.Configuration = {
     environment: {
       arrowFunction: false,
     },
-    publicPath: NODE_ENV === 'production' ? '/expense-tracking-app/' : '/',
+    publicPath: NODE_ENV === 'production' ? `/${pkg.name}` : '/',
   },
   module: {
     rules: [
@@ -68,6 +69,9 @@ const config: webpack.Configuration = {
     //   PRODUCTION: NODE_ENV === "production",
     //   PREFIX: JSON.stringify(PREFIX),
     // }),
+    new webpack.DefinePlugin({
+      PREFIX: JSON.stringify(PREFIX),
+    }),
     new MiniCssExtractPlugin(),
     new FaviconsWebpackPlugin('src/assets/img/favicon.png'),
     new NodePolyfillPlugin(),

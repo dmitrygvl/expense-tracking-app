@@ -1,30 +1,22 @@
-type TSpending = {
+import { v4 } from 'uuid';
+
+export interface ISpending {
   id: string;
   date: number;
-  category: string;
-  subCategory: string;
+  categoryId: string;
+  subcategoryId: string;
   payment: number;
-};
-
-class Spending {
-  id: string;
-
-  date: number;
-
-  category: string;
-
-  subCategory: string;
-
-  payment: number;
-
-  constructor(options: TSpending) {
-    const { id, date, category, subCategory, payment } = options;
-    this.id = id;
-    this.date = date;
-    this.category = category;
-    this.subCategory = subCategory;
-    this.payment = payment;
-  }
 }
 
-export default Spending;
+export const createSpending = (
+  date: number,
+  categoryId: string,
+  subcategoryId: string,
+  payment: number,
+): ISpending => ({
+  id: v4(),
+  date,
+  categoryId,
+  subcategoryId,
+  payment,
+});

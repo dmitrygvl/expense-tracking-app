@@ -1,103 +1,105 @@
 import React, { FC } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState } from '../../store/store';
+import { IRootState } from '../../store/store';
 import { logOut } from '../../store/slices/authSlice';
 import { deleteUser } from '../../store/slices/userSlice';
+import { deleteCategories } from '../../store/slices/categoriesSlice';
+import { deleteSpendings } from '../../store/slices/spendingSlice';
 import './Header.css';
 
 const Header: FC = () => {
   const location = useLocation();
-  const auth = useSelector((store: TRootState) => store.auth);
+  const user = useSelector((store: IRootState) => store.user);
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
     dispatch(logOut());
     dispatch(deleteUser());
+
     localStorage.setItem('@dmitrygvl/expense-tracking-app', '');
   };
 
   return (
-    <div className="header">
-      <div className="header__container header-container _container">
-        <Link className="header-container__title" to="/">
-          Cost management
-        </Link>
-        <nav className="header-container__nav nav-header">
-          {auth && (
-            <>
-              <Link
-                className={`nav-header__link ${
-                  location.pathname === '/costs'
-                    ? 'nav-header__link_active'
-                    : ''
-                }`}
-                to="/costs"
-              >
-                COSTS
-              </Link>
-              <Link
-                className={`nav-header__link ${
-                  location.pathname === '/setting'
-                    ? 'nav-header__link_active'
-                    : ''
-                }`}
-                to="/setting"
-              >
-                SETTING
-              </Link>
-              <Link
-                className={`nav-header__link ${
-                  location.pathname === '/report'
-                    ? 'nav-header__link_active'
-                    : ''
-                }`}
-                to="/report"
-              >
-                REPORT
-              </Link>
-            </>
-          )}
-          <Link
-            className={`nav-header__link ${
-              location.pathname === '/about' ? 'nav-header__link_active' : ''
-            }`}
-            to="/about"
-          >
-            ABOUT
+    <>
+      <div className="header">
+        <div className="header__container header-container _container">
+          <Link className="header-container__title" to={`${PREFIX}/`}>
+            Expense tracking
           </Link>
-          {!auth && (
-            <>
-              <Link
-                className={`nav-header__link ${
-                  location.pathname === '/login'
-                    ? 'nav-header__link_active'
-                    : ''
-                }`}
-                to="/login"
-              >
-                LOG IN
-              </Link>
-              <Link
-                className={`nav-header__link ${
-                  location.pathname === '/signup'
-                    ? 'nav-header__link_active'
-                    : ''
-                }`}
-                to="/signup"
-              >
-                SIGN UP
-              </Link>
-            </>
-          )}
-          {auth && (
-            <Link className={`nav-header__link`} to="/" onClick={handleSignOut}>
-              SIGN OUT
+          <nav className="header-container__nav nav-header">
+            {user.uid && (
+              <>
+                <Link
+                  className={`nav-header__link ${
+                    location.pathname.includes('/spendings')
+                      ? 'nav-header__link_active'
+                      : ''
+                  }`}
+                  to={`${PREFIX}/spendings`}
+                >
+                  COSTS
+                </Link>
+                <Link
+                  className={`nav-header__link ${
+                    location.pathname === '/spendingSettings'
+                      ? 'nav-header__link_active'
+                      : ''
+                  }`}
+                  to={`${PREFIX}/spendingSettings`}
+                >
+                  CATEGORIES
+                </Link>
+              </>
+            )}
+            <Link
+              className={`nav-header__link ${
+                location.pathname.includes('/about')
+                  ? 'nav-header__link_active'
+                  : ''
+              }`}
+              to={`${PREFIX}/about`}
+            >
+              ABOUT
             </Link>
-          )}
-        </nav>
+            {!user.uid && (
+              <>
+                <Link
+                  className={`nav-header__link ${
+                    location.pathname.includes('/login')
+                      ? 'nav-header__link_active'
+                      : ''
+                  }`}
+                  to={`${PREFIX}/login`}
+                >
+                  LOG IN
+                </Link>
+                <Link
+                  className={`nav-header__link ${
+                    location.pathname.includes('/signup')
+                      ? 'nav-header__link_active'
+                      : ''
+                  }`}
+                  to={`${PREFIX}/signup`}
+                >
+                  SIGN UP
+                </Link>
+              </>
+            )}
+            {user.uid && (
+              <Link
+                className={`nav-header__link`}
+                to={`${PREFIX}/`}
+                onClick={handleSignOut}
+              >
+                SIGN OUT
+              </Link>
+            )}
+          </nav>
+        </div>
       </div>
-    </div>
+      <Outlet />
+    </>
   );
 };
 

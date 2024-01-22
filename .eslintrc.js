@@ -52,7 +52,9 @@ module.exports = {
     'no-param-reassign': 'off',
     'no-restricted-syntax': 'off',
     'default-param-last': 'off',
+    'no-await-in-loop': 'off',
     'class-methods-use-this': 'off',
+    'max-classes-per-file': ['error', { ignoreExpressions: true, max: 2 }],
     'prefer-destructuring': ['error', { object: true, array: false }],
   },
   settings: {

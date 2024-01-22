@@ -1,5 +1,15 @@
 import { Database, ref, get, set, child } from 'firebase/database';
-import UserModel, { IUser } from './userModel';
+
+export type IUser = {
+  uid: string;
+  name: string;
+};
+
+abstract class UserModel {
+  abstract getUser(uid: string): Promise<IUser | null>;
+
+  abstract createUser(uid: string, name: string): Promise<IUser | null>;
+}
 
 class FirebaseUserModel extends UserModel {
   private db;
@@ -32,14 +42,14 @@ class FirebaseUserModel extends UserModel {
         return snapshot.val();
       }
 
-      throw new Error('The user with this ID does not exist');
+      throw new Error('The user with this ID does not exist.');
     } catch (err) {
       console.log((err as Error).message);
       return null;
     }
   }
 
-  async createUser(uid: string, name: string): Promise<string | null> {
+  async createUser(uid: string, name: string): Promise<IUser | null> {
     try {
       await set(
         ref(
@@ -52,8 +62,9 @@ class FirebaseUserModel extends UserModel {
         },
       );
 
-      return uid;
+      return { uid, name };
     } catch (err) {
+      console.log((err as Error).message);
       return null;
     }
   }
