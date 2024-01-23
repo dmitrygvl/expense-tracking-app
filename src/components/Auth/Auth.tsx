@@ -1,25 +1,24 @@
-import React, { FC, FormEvent, useMemo, useState } from 'react';
+import React, { FC, FormEvent, useState } from 'react';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { logIn } from '../../store/slices/authSlice';
 import {
   auth,
   userStorage,
-  spendingStorage,
+  costStorage,
   categoryStorage,
 } from '../../API/firebase';
 import { addUser } from '../../store/slices/userSlice';
 import { addCategories } from '../../store/slices/categoriesSlice';
-import { addSpendings } from '../../store/slices/spendingSlice';
+import { addCosts } from '../../store/slices/costsSlice';
 import { IUser } from '../../API/user/firebaseUserModel';
 import { IAppDispatch } from '../../store/store';
 import './Auth.css';
 
-type IAuthMode = 'login' | 'signUp';
+type IAuthMode = 'login' | 'signup';
 
 interface IRegData {
   name: string;
@@ -40,7 +39,7 @@ const initialRegData: IRegData = {
 };
 
 const authObj = {
-  signUp: createUserWithEmailAndPassword,
+  signup: createUserWithEmailAndPassword,
   login: signInWithEmailAndPassword,
 };
 
@@ -55,10 +54,10 @@ const getInitialDataForStore = async (uid: string, dispatch: IAppDispatch) => {
     dispatch(addCategories(categories));
   }
 
-  const spendings = await spendingStorage.getAll(uid);
+  const costs = await costStorage.getAll(uid);
 
-  if (spendings) {
-    dispatch(addSpendings(spendings));
+  if (costs) {
+    dispatch(addCosts(costs));
   }
 };
 
@@ -99,72 +98,20 @@ const userAuth = async (
 };
 
 const Auth: FC<IAuthProps> = ({ mode }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [pass, setPass] = useState('');
-  const [passRepeat, setPassRepeat] = useState('');
+  const [regData, setRegData] = useState(initialRegData);
   const [error, setError] = useState({ state: false, message: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isRepeatPassNotMatch = useMemo(
-    () => pass !== passRepeat,
-    [pass, passRepeat],
-  );
+  const isRepeatPassNotMatch = regData.pass !== regData.passRepeat;
 
-  const onFormSubmit = (ev: FormEvent) => {
+  const onFormSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
-
-    if (mode === 'login') {
-      signInWithEmailAndPassword(auth, email, pass)
-        .then(async (userCredential) => {
-          const { user } = userCredential;
-          localStorage.setItem('@djess-v/cost-management', user.uid);
-          const profile = await userStorage.getUser(user.uid);
-
-          if (profile) {
-            dispatch(logIn());
-            dispatch(addUser({ uid: profile.uid, name: profile.name }));
-            navigate('/');
-          }
-        })
-        .catch((err) => {
-          setError({
-            state: true,
-            message: 'No user with this data was found! Register!',
-          });
-        });
-    } else {
-      createUserWithEmailAndPassword(auth, email, pass)
-        .then(async (userCredential) => {
-          const { user } = userCredential;
-          localStorage.setItem('@dimtrygvl/expense-tracking-app', user.uid);
-          dispatch(logIn());
-          dispatch(addUser({ uid: user.uid, name }));
-          const userId = await userStorage.createUser(user.uid, name);
-
-          if (userId) {
-            navigate('/');
-          } else {
-            throw new Error(
-              'Something went wrong with the profile creation! Try again!',
-            );
-          }
-        })
-        .catch((err: Error) => {
-          setError({
-            state: true,
-            message: err.message,
-          });
-        });
-    }
+    await userAuth(mode, regData, setError, navigate, dispatch);
   };
 
   const clearForm = () => {
-    setName('');
-    setEmail('');
-    setPass('');
-    setPassRepeat('');
+    setRegData({ ...initialRegData });
     setError({ state: false, message: '' });
   };
 
@@ -172,41 +119,47 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
     <div className="_container">
       <div className="auth">
         <h1 className="auth__title">
-          {mode === 'login' ? 'Log In' : 'Sign up'}
+          {mode === 'login' ? 'Log in' : 'Sign up'}
         </h1>
         <form
           className="auth__form form-auth"
           onSubmit={onFormSubmit}
           name="form-auth"
         >
-          {mode === 'signUp' && (
+          {mode === 'signup' && (
             <>
               <label className="auth__form_label" htmlFor="name">
                 Name:
               </label>
               <input
                 className="auth__form_input _input"
-                onChange={(e) => setName(e.target.value)}
-                value={name}
+                onChange={(ev) =>
+                  setRegData({ ...regData, name: ev.target.value })
+                }
+                value={regData.name}
                 name="name"
                 id="name"
                 minLength={3}
                 required
+                data-testid="name"
               />
             </>
           )}
           <label className="auth__form_label" htmlFor="email">
-            E-mail:
+            Email:
           </label>
           <input
             className="auth__form_input _input"
             type="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
+            onChange={(ev) =>
+              setRegData({ ...regData, email: ev.target.value })
+            }
+            value={regData.email}
             name="email"
             id="email"
             minLength={6}
             required
+            data-testid="email"
           />
           <label className="auth__form_label" htmlFor="password">
             Password:
@@ -214,15 +167,16 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
           <input
             className="auth__form_input _input"
             type="password"
-            onChange={(e) => setPass(e.target.value)}
-            value={pass}
+            onChange={(ev) => setRegData({ ...regData, pass: ev.target.value })}
+            value={regData.pass}
             name="password"
             id="password"
             minLength={6}
             required
+            data-testid="password"
           />
 
-          {mode === 'signUp' && (
+          {mode === 'signup' && (
             <>
               <label className="auth__form_label" htmlFor="repeat-password">
                 Repeat password:
@@ -230,18 +184,22 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
               <input
                 className="auth__form_input _input"
                 type="password"
-                onChange={(e) => setPassRepeat(e.target.value)}
-                value={passRepeat}
+                onChange={(ev) =>
+                  setRegData({ ...regData, passRepeat: ev.target.value })
+                }
+                value={regData.passRepeat}
                 name="repeatPassword"
                 id="repeat-password"
                 minLength={6}
                 required
+                data-testid="repeatPassword"
               />
+              {isRepeatPassNotMatch && (
+                <p className="auth__form_error" data-testid="error">
+                  Password mismatch
+                </p>
+              )}
             </>
-          )}
-
-          {mode === 'signUp' && isRepeatPassNotMatch && (
-            <p className="auth__form_error">Passwords do not match</p>
           )}
 
           {error.state && <p className="auth__form_error">{error.message}</p>}
@@ -258,9 +216,9 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             <button
               className="form-auth__buttons_button _button"
               type="submit"
-              disabled={mode === 'signUp' && isRepeatPassNotMatch}
+              disabled={mode === 'signup' && isRepeatPassNotMatch}
             >
-              {mode === 'signUp' ? 'Create' : 'Log in'}
+              {mode === 'signup' ? 'Create' : 'Log in'}
             </button>
           </div>
         </form>

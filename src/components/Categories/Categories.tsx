@@ -3,7 +3,7 @@ import { Trash2 as TrashIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Subcategories from '../Subcategories/Subcategories';
 import { createCategory } from '../../API/category/category';
-import { categoryStorage, spendingStorage } from '../../API/firebase';
+import { categoryStorage, costStorage } from '../../API/firebase';
 import { IRootState } from '../../store/store';
 import { IUser } from '../../API/user/firebaseUserModel';
 import {
@@ -14,16 +14,16 @@ import {
   convertCategoryForStore,
   convertSubcategoriesForFirebase,
 } from '../../utils/convertCategory';
-import { deleteSpendingsOfDeletedCategory } from '../../store/slices/spendingSlice';
-import './SpendingSettings.css';
+import { deleteCostsOfDeletedCategory } from '../../store/slices/costsSlice';
+import './Categories.css';
 
-const SpendingSettings: FC<Record<string, any>> = () => {
+const Categories: FC<Record<string, any>> = () => {
   const [subcategories, setSubcategories] = useState([] as string[]);
   const [categoryName, setCategoryName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
   const user = useSelector((st: IRootState) => st.user);
-  const spendings = useSelector((store: IRootState) => store.spendings);
+  const costs = useSelector((store: IRootState) => store.costs);
   const dispatch = useDispatch();
 
   const onDeleteSubcategories = (index: number) => {
@@ -68,8 +68,8 @@ const SpendingSettings: FC<Record<string, any>> = () => {
 
   const onClickDeleteButton = async (categoryId: string) => {
     if (user.uid) {
-      const spendingsIds = spendings
-        .filter((spending) => spending.categoryId === categoryId)
+      const costsIds = costs
+        .filter((cost) => cost.categoryId === categoryId)
         .map((item) => item.id);
 
       const deleted = await categoryStorage.delete(user.uid, categoryId);
@@ -78,14 +78,13 @@ const SpendingSettings: FC<Record<string, any>> = () => {
         dispatch(deleteCategory(categoryId));
       }
 
-      const spendingsDeleted =
-        await spendingStorage.deleteSpendingsOfDeletedCategory(
-          user.uid,
-          spendingsIds,
-        );
+      const costsDeleted = await costStorage.deleteCostsOfDeletedCategory(
+        user.uid,
+        costsIds,
+      );
 
-      if (spendingsDeleted) {
-        dispatch(deleteSpendingsOfDeletedCategory(categoryId));
+      if (costsDeleted) {
+        dispatch(deleteCostsOfDeletedCategory(categoryId));
       }
     }
   };
@@ -194,4 +193,4 @@ const SpendingSettings: FC<Record<string, any>> = () => {
   );
 };
 
-export default SpendingSettings;
+export default Categories;

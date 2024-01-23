@@ -15,7 +15,7 @@ const About = () => {
             <h2 className="content-about__header_title">About</h2>
           </div>
           <div className="content-about__body">
-            <img src={avatar} alt="avatar" width="148px" height="180px" />
+            <img src={avatar} alt="avatar" width="148px" height="200px" />
             <table>
               <tbody>
                 <tr>

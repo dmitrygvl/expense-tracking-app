@@ -4,8 +4,8 @@ import Header from '../Header/Header';
 import Home from '../Home/Home';
 import Auth from '../Auth/Auth';
 import About from '../About/About';
-import SpendingSettings from '../SpendingSettings/SpendingSettings';
-import Spendings from '../Spendings/Spendings';
+import Categories from '../Categories/Categories';
+import Costs from '../Costs/Costs';
 import './App.css';
 
 const App = () => (
@@ -15,9 +15,10 @@ const App = () => (
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="login" element={<Auth mode="login" />} />
-        <Route path="signup" element={<Auth mode="signUp" />} />
-        <Route path="setting" element={<SpendingSettings />} />
-        <Route path="expenses" element={<Spendings />} />
+        <Route path="signup" element={<Auth mode="signup" />} />
+        <Route path="categories" element={<Categories />} />
+        <Route path="costs" element={<Costs />} />
+        {/* <Route path="statisics" element={<Statisics />}></Route> */}
       </Route>
     </Routes>
   </BrowserRouter>

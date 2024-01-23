@@ -2,14 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 // import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import categoriesReducer from './slices/categoriesSlice';
-import spendingReducer from './slices/spendingSlice';
+import costReducer from './slices/costsSlice';
 
 const store = configureStore({
   reducer: {
     // auth: authReducer,
     user: userReducer,
     categories: categoriesReducer,
-    spendings: spendingReducer,
+    costs: costReducer,
   },
 });
 

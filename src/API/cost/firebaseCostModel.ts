@@ -1,19 +1,19 @@
 import { Database, ref, set, get, child, remove } from 'firebase/database';
-import { ISpending } from './spending';
-import { convertSpendingsForStore } from '../../utils/convertSpendings';
+import { ICost } from './cost';
+import { convertCostsForStore } from '../../utils/convertCosts';
 
-abstract class SpendingModel {
-  abstract getAll(uid: string): Promise<ISpending[] | null>;
+abstract class CostModel {
+  abstract getAll(uid: string): Promise<ICost[] | null>;
 
-  abstract create(uid: string, category: ISpending): Promise<string | null>;
+  abstract create(uid: string, category: ICost): Promise<string | null>;
 
-  abstract deleteSpendingsOfDeletedCategory(
+  abstract deleteCostsOfDeletedCategory(
     uid: string,
-    spendingId: string[],
+    costId: string[],
   ): Promise<boolean>;
 }
 
-class FirebaseSpendingModel extends SpendingModel {
+class FirebaseCostModel extends CostModel {
   private db;
 
   private parentCollectionName;
@@ -31,7 +31,7 @@ class FirebaseSpendingModel extends SpendingModel {
     this.collectionName = collectionName;
   }
 
-  async getAll(uid: string): Promise<ISpending[] | null> {
+  async getAll(uid: string): Promise<ICost[] | null> {
     try {
       const dbRef = ref(this.db);
       const snapshot = await get(
@@ -41,41 +41,41 @@ class FirebaseSpendingModel extends SpendingModel {
         ),
       );
       if (snapshot.exists()) {
-        return convertSpendingsForStore(snapshot.val());
+        return convertCostsForStore(snapshot.val());
       }
 
-      throw new Error('No spendings in firebase.');
+      throw new Error('No costs in firebase.');
     } catch (err) {
       console.log((err as Error).message);
       return null;
     }
   }
 
-  async create(uid: string, spending: ISpending): Promise<string | null> {
+  async create(uid: string, cost: ICost): Promise<string | null> {
     try {
       await set(
         ref(
           this.db,
           `${this.parentCollectionName}${uid}${`${this.collectionName}/`}${
-            spending.id
+            cost.id
           }`,
         ),
-        spending,
+        cost,
       );
 
-      return spending.id;
+      return cost.id;
     } catch (err) {
       console.log((err as Error).message);
       return null;
     }
   }
 
-  async deleteSpendingsOfDeletedCategory(
+  async deleteCostsOfDeletedCategory(
     userId: string,
-    spendingId: string[],
+    costIds: string[],
   ): Promise<boolean> {
     try {
-      for (const id of spendingId) {
+      for (const id of costIds) {
         await remove(
           ref(
             this.db,
@@ -94,4 +94,4 @@ class FirebaseSpendingModel extends SpendingModel {
   }
 }
 
-export default FirebaseSpendingModel;
+export default FirebaseCostModel;

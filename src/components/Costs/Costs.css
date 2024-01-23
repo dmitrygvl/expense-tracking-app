@@ -1,18 +1,18 @@
-.spendings {
+.costs {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.spendings__title {
+.costs__title {
   margin-bottom: 0;
   line-height: 1.5;
   margin-top: 0;
   font-weight: 500;
 }
 
-.spendings__form {
+.costs__form {
   width: 100%;
   max-width: 500px;
   padding: 20px;
@@ -20,11 +20,11 @@
   flex-direction: column;
 }
 
-.spendings__form_label {
+.costs__form_label {
   padding: 10px 0;
 }
 
-.spendings__form_input {
+.costs__form_input {
   width: 100%;
   max-height: 40px;
   padding: 10px;
@@ -33,18 +33,18 @@
   border-radius: 6px;
 }
 
-.spendings__form_message {
+.costs__form_message {
   text-align: center;
   padding: 10px;
   margin: 0;
   color: rgb(11, 168, 5);
 }
 
-.form-spendings__buttons {
+.form-costs__buttons {
   margin-top: 20px;
   align-self: flex-end;
 }
 
-.form-spendings__buttons_button:not(:last-child) {
+.form-costs__buttons_button:not(:last-child) {
   margin-right: 25px;
 }

@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 import FirebaseCategoryModel from './category/firebaseCategoryModel';
-import FirebaseSpendingModel from './spending/firebaseSpendingModel';
+import FirebaseCostModel from './cost/firebaseCostModel';
 import FirebaseUserModel from './user/firebaseUserModel';
 
 // import 'dotenv/config';
@@ -27,10 +27,10 @@ const db = getDatabase(app);
 
 const userStorage = new FirebaseUserModel(db, 'users/', 'profiles');
 const categoryStorage = new FirebaseCategoryModel(db, 'users', 'categories');
-const spendingStorage = new FirebaseSpendingModel(db, 'users', 'spendings');
+const costStorage = new FirebaseCostModel(db, 'users', 'costs');
 
 const auth = getAuth();
 
 export const isUserSignedIn = () => !!getAuth().currentUser;
 
-export { db, auth, categoryStorage, spendingStorage, userStorage };
+export { db, auth, categoryStorage, costStorage, userStorage };

@@ -5,24 +5,38 @@ import { IRootState } from '../../store/store';
 import { logOut } from '../../store/slices/authSlice';
 import { deleteUser } from '../../store/slices/userSlice';
 import { deleteCategories } from '../../store/slices/categoriesSlice';
-import { deleteSpendings } from '../../store/slices/spendingSlice';
+import { deleteCosts } from '../../store/slices/costsSlice';
+import { updateRange } from '../../store/slices/rengeSlice';
 import './Header.css';
+
+const now = new Date().getTime();
 
 const Header: FC = () => {
   const location = useLocation();
   const user = useSelector((store: IRootState) => store.user);
   const dispatch = useDispatch();
 
-  const handleSignOut = () => {
-    dispatch(logOut());
-    dispatch(deleteUser());
+  // const handleSignOut = () => {
+  //   dispatch(logOut());
+  //   dispatch(deleteUser());
 
-    localStorage.setItem('@dmitrygvl/expense-tracking-app', '');
+  //   localStorage.setItem('@dmitrygvl/expense-tracking-app', '');
+  // };
+  const handleSignOut = () => {
+    dispatch(deleteUser());
+    dispatch(
+      updateRange({
+        startDate: now,
+        endDate: now,
+      }),
+    );
+    dispatch(deleteCategories());
+    dispatch(deleteCosts());
   };
 
   return (
     <>
-      <div className="header">
+      <header className="header">
         <div className="header__container header-container _container">
           <Link className="header-container__title" to={`${PREFIX}/`}>
             Expense tracking
@@ -32,23 +46,33 @@ const Header: FC = () => {
               <>
                 <Link
                   className={`nav-header__link ${
-                    location.pathname.includes('/spendings')
+                    location.pathname.includes('/costs')
                       ? 'nav-header__link_active'
                       : ''
                   }`}
-                  to={`${PREFIX}/spendings`}
+                  to={`${PREFIX}/costs`}
                 >
                   COSTS
                 </Link>
                 <Link
                   className={`nav-header__link ${
-                    location.pathname === '/spendingSettings'
+                    location.pathname === '/costSettings'
                       ? 'nav-header__link_active'
                       : ''
                   }`}
-                  to={`${PREFIX}/spendingSettings`}
+                  to={`${PREFIX}/costSettings`}
                 >
                   CATEGORIES
+                </Link>
+                <Link
+                  className={`nav-header__link ${
+                    location.pathname.includes('/reports')
+                      ? 'nav-header__link_active'
+                      : ''
+                  }`}
+                  to={`${PREFIX}/reports`}
+                >
+                  REPORTS
                 </Link>
               </>
             )}
@@ -97,7 +121,7 @@ const Header: FC = () => {
             )}
           </nav>
         </div>
-      </div>
+      </header>
       <Outlet />
     </>
   );

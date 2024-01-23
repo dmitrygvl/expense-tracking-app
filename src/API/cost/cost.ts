@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-export interface ISpending {
+export interface ICost {
   id: string;
   date: number;
   categoryId: string;
@@ -8,12 +8,12 @@ export interface ISpending {
   payment: number;
 }
 
-export const createSpending = (
+export const createCost = (
   date: number,
   categoryId: string,
   subcategoryId: string,
   payment: number,
-): ISpending => ({
+): ICost => ({
   id: v4(),
   date,
   categoryId,

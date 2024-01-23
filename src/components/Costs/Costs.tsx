@@ -1,15 +1,15 @@
 import React, { FC, FormEvent, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { createSpending } from '../../API/spending/spending';
+import { createCost } from '../../API/cost/cost';
 import { IRootState } from '../../store/store';
 import { addZero } from '../../utils/convertFunc';
-import { spendingStorage } from '../../API/firebase';
-import { addSpending } from '../../store/slices/spendingSlice';
+import { costStorage } from '../../API/firebase';
+import { addCost } from '../../store/slices/costsSlice';
 import { ISubcategory } from '../../API/category/category';
-import './Spendings.css';
+import './Costs.css';
 
-const Spendings: FC = () => {
+const Costs: FC = () => {
   const now = new Date();
   const [selectedCategory, setSelectedCategory] = useState({
     value: '',
@@ -38,7 +38,10 @@ const Spendings: FC = () => {
       (
         categories.find((el) => el.id === selectedCategory.value)
           ?.subcategories || []
-      ).map((element) => ({ value: element.id, label: element.name })),
+      ).map((element: ISubcategory) => ({
+        value: element.id,
+        label: element.name,
+      })),
     [categories, selectedCategory],
   );
 
@@ -53,18 +56,18 @@ const Spendings: FC = () => {
     setPayment('0');
   };
 
-  const onFormSubmit = async (evt: FormEvent) => {
-    evt.preventDefault();
+  const onFormSubmit = async (ev: FormEvent) => {
+    ev.preventDefault();
 
     if (!selectedCategory.value) {
-      setMessage('Be sure to choose a category.');
+      setMessage('Choose a right category');
       setTimeout(() => {
         setMessage('');
       }, 3000);
       return;
     }
 
-    const expense = createSpending(
+    const expense = createCost(
       new Date(date).getTime(),
       selectedCategory.value,
       selectedSubcategory.value,
@@ -72,12 +75,12 @@ const Spendings: FC = () => {
     );
 
     if (user.uid) {
-      const expenseId = await spendingStorage.create(user.uid, expense);
+      const expenseId = await costStorage.create(user.uid, expense);
 
       if (expenseId) {
-        dispatch(addSpending(expense));
+        dispatch(addCost(expense));
         clearForm();
-        setMessage('Spendings added.');
+        setMessage('Costs added.');
         setTimeout(() => {
           setMessage('');
         }, 3000);
@@ -87,50 +90,50 @@ const Spendings: FC = () => {
 
   return (
     <div className="_container">
-      <div className="spendings">
-        <h2 className="spendings__title">Add spendings:</h2>
+      <section className="costs">
+        <h2 className="costs__title">Add costs:</h2>
         <form
-          className="spendings__form form-spendings"
+          className="costs__form form-costs"
           onSubmit={onFormSubmit}
-          name="spendings-form"
+          name="costs-form"
         >
-          <label className="spendings__form_label" htmlFor="category">
+          <label className="costs__form_label" htmlFor="category">
             Category:
           </label>
           <Select
             inputId="category"
             placeholder="Select"
             value={selectedCategory}
-            onChange={(e) => {
-              if (e) {
-                setSelectedCategory(e);
+            onChange={(ev) => {
+              if (ev) {
+                setSelectedCategory(ev);
               }
             }}
             options={categoriesForSelection}
             required
           />
-          <label className="spendings__form_label" htmlFor="subcategory">
+          <label className="costs__form_label" htmlFor="subcategory">
             Subcategory:
           </label>
           <Select
             inputId="subcategory"
             placeholder="Select"
             value={selectedSubcategory}
-            onChange={(e) => {
-              if (e) {
-                setSelectedSubcategory(e);
+            onChange={(ev) => {
+              if (ev) {
+                setSelectedSubcategory(ev);
               }
             }}
             options={subcategoriesForSelection}
           />
-          <label className="spendings__form_label" htmlFor="eventDate">
+          <label className="costs__form_label" htmlFor="eventDate">
             Date:
           </label>
           <input
             data-testid="date"
-            className="spendings__form_input _input"
+            className="costs__form_input _input"
             type="date"
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(ev) => setDate(ev.target.value)}
             value={date}
             name="date"
             id="date"
@@ -138,40 +141,40 @@ const Spendings: FC = () => {
             max="2099-12-31"
             required
           />
-          <label className="spendings__form_label" htmlFor="payment">
+          <label className="costs__form_label" htmlFor="payment">
             Payment:
           </label>
           <input
-            className="spendings__form_input _input"
+            className="costs__form_input _input"
             type="number"
-            onChange={(e) => setPayment(e.target.value)}
+            onChange={(ev) => setPayment(ev.target.value)}
             value={payment}
             name="payment"
             id="payment"
             min="0"
-            step="0.01"
+            step="1"
             required
           />
-          <p className="spendings__form_message">{message}</p>
-          <div className="form-spendings__buttons">
+          <p className="costs__form_message">{message}</p>
+          <div className="form-costs__buttons">
             <button
-              className="form-spendings__buttons_button _button"
+              className="form-costs__buttons_button _button"
               type="button"
               onClick={clearForm}
             >
               Clear form
             </button>
             <button
-              className="form-spendings__buttons_button _button"
+              className="form-costs__buttons_button _button"
               type="submit"
             >
               Add cost
             </button>
           </div>
         </form>
-      </div>
+      </section>
     </div>
   );
 };
 
-export default Spendings;
+export default Costs;
