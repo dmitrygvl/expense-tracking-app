@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .header-container {
     flex-direction: column;
     justify-content: center;
@@ -39,17 +39,24 @@
   transition: all 0.3s linear;
 }
 .nav-header__link_active {
-  color: #e1e973;
+  color: #96fd81;
   pointer-events: none;
 }
 .nav-header__link:hover {
   color: #b9b9b9;
 }
 .nav-header__link_active:hover {
-  color: #fdc781;
+  color: #96fd81;
 }
 
-@media (max-width: 440px) {
+@media (max-width: 700px) {
+  .nav-header__link {
+    padding: 10px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 520px) {
   .header-container__title {
     font-size: 30px;
   }
@@ -57,5 +64,6 @@
   .nav-header {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
 }

@@ -7,16 +7,16 @@ import { useDispatch } from 'react-redux';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   auth,
-  userStorage,
-  costStorage,
   categoryStorage,
+  costStorage,
+  userStorage,
 } from '../../API/firebase';
+import './Auth.css';
 import { addUser } from '../../store/slices/userSlice';
 import { addCategories } from '../../store/slices/categoriesSlice';
 import { addCosts } from '../../store/slices/costsSlice';
 import { IUser } from '../../API/user/firebaseUserModel';
 import { IAppDispatch } from '../../store/store';
-import './Auth.css';
 
 type IAuthMode = 'login' | 'signup';
 
@@ -27,7 +27,7 @@ interface IRegData {
   passRepeat: string;
 }
 
-interface IAuthProps {
+interface IProps {
   mode: IAuthMode;
 }
 
@@ -39,37 +39,40 @@ const initialRegData: IRegData = {
 };
 
 const authObj = {
-  signup: createUserWithEmailAndPassword,
   login: signInWithEmailAndPassword,
+  signup: createUserWithEmailAndPassword,
 };
 
-const uidSaveToLocalStorage = (uid: string) => {
-  localStorage.setItem('@dmitrygvl/expense-tracking-app', uid);
-};
+function uidSaveToLocalStorage(id: string) {
+  localStorage.setItem('@dmitrygvl/expense-tracking-app', id);
+}
 
-const getInitialDataForStore = async (uid: string, dispatch: IAppDispatch) => {
-  const categories = await categoryStorage.getAll(uid);
+async function getInitialDataForStore(id: string, dispatch: IAppDispatch) {
+  const categories = await categoryStorage.getAll(id);
 
   if (categories) {
     dispatch(addCategories(categories));
   }
 
-  const costs = await costStorage.getAll(uid);
+  const costs = await costStorage.getAll(id);
 
   if (costs) {
     dispatch(addCosts(costs));
   }
-};
+}
 
-const userAuth = async (
+async function userAuth(
   mode: IAuthMode,
   regData: IRegData,
   errorCb: React.Dispatch<
-    React.SetStateAction<{ state: boolean; message: string }>
+    React.SetStateAction<{
+      state: boolean;
+      message: string;
+    }>
   >,
-  navigate: NavigateFunction,
   dispatch: IAppDispatch,
-) => {
+  navigate: NavigateFunction,
+) {
   try {
     let profile: IUser | null = null;
 
@@ -89,15 +92,15 @@ const userAuth = async (
     }
 
     navigate(`${PREFIX}/`);
-  } catch (err) {
+  } catch (error) {
     errorCb({
       state: true,
-      message: (err as unknown as Error).message,
+      message: (error as unknown as Error).message,
     });
   }
-};
+}
 
-const Auth: FC<IAuthProps> = ({ mode }) => {
+const Auth: FC<IProps> = ({ mode }) => {
   const [regData, setRegData] = useState(initialRegData);
   const [error, setError] = useState({ state: false, message: '' });
   const dispatch = useDispatch();
@@ -105,9 +108,9 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
 
   const isRepeatPassNotMatch = regData.pass !== regData.passRepeat;
 
-  const onFormSubmit = async (ev: FormEvent) => {
-    ev.preventDefault();
-    await userAuth(mode, regData, setError, navigate, dispatch);
+  const onFormSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    await userAuth(mode, regData, setError, dispatch, navigate);
   };
 
   const clearForm = () => {
@@ -119,7 +122,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
     <div className="_container">
       <div className="auth">
         <h1 className="auth__title">
-          {mode === 'login' ? 'Log in' : 'Sign up'}
+          {mode === 'login' ? 'Log In' : 'Sign up'}
         </h1>
         <form
           className="auth__form form-auth"
@@ -146,7 +149,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             </>
           )}
           <label className="auth__form_label" htmlFor="email">
-            Email:
+            E-mail:
           </label>
           <input
             className="auth__form_input _input"
@@ -157,7 +160,7 @@ const Auth: FC<IAuthProps> = ({ mode }) => {
             value={regData.email}
             name="email"
             id="email"
-            minLength={6}
+            minLength={3}
             required
             data-testid="email"
           />

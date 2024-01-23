@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import categoriesReducer from './slices/categoriesSlice';
-import costReducer from './slices/costsSlice';
+import costsReducer from './slices/costsSlice';
+import rangeReducer from './slices/rangeSlice';
 
 const store = configureStore({
   reducer: {
-    // auth: authReducer,
     user: userReducer,
     categories: categoriesReducer,
-    costs: costReducer,
+    costs: costsReducer,
+    range: rangeReducer,
   },
 });
 

@@ -1,11 +1,9 @@
 import 'webpack-dev-server';
 import * as webpack from 'webpack';
-
 import { resolve } from 'node:path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import 'dotenv/config';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import pkg from './package.json';
@@ -65,10 +63,6 @@ const config: webpack.Configuration = {
       template: 'index.html',
       filename: '404.html',
     }),
-    // new webpack.DefinePlugin({
-    //   PRODUCTION: NODE_ENV === "production",
-    //   PREFIX: JSON.stringify(PREFIX),
-    // }),
     new webpack.DefinePlugin({
       PREFIX: JSON.stringify(PREFIX),
     }),

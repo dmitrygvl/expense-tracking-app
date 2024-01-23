@@ -3,14 +3,14 @@ import { ICategory } from './category';
 import {
   IConvertCategory,
   convertCategoriesForStore,
-} from '../../utils/convertCategory';
+} from '../../utils/convertCategories';
 
 abstract class CategoryModel {
-  abstract getAll(userId: string): Promise<IConvertCategory[] | null>;
+  abstract getAll(uid: string): Promise<IConvertCategory[] | null>;
 
-  abstract create(userId: string, category: ICategory): Promise<string | null>;
+  abstract create(uid: string, category: ICategory): Promise<string | null>;
 
-  abstract delete(userId: string, id: string): Promise<boolean>;
+  abstract delete(uid: string, id: string): Promise<boolean>;
 }
 
 class FirebaseCategoryModel extends CategoryModel {
@@ -31,13 +31,13 @@ class FirebaseCategoryModel extends CategoryModel {
     this.collectionName = collectionName;
   }
 
-  async getAll(userId: string): Promise<IConvertCategory[] | null> {
+  async getAll(uid: string): Promise<IConvertCategory[] | null> {
     try {
       const dbRef = ref(this.db);
       const snapshot = await get(
         child(
           dbRef,
-          `${this.parentCollectionName}${userId}${this.collectionName}`,
+          `${this.parentCollectionName}${uid}${this.collectionName}`,
         ),
       );
       if (snapshot.exists()) {
@@ -51,12 +51,12 @@ class FirebaseCategoryModel extends CategoryModel {
     }
   }
 
-  async create(userId: string, category: ICategory): Promise<string | null> {
+  async create(uid: string, category: ICategory): Promise<string | null> {
     try {
       await set(
         ref(
           this.db,
-          `${this.parentCollectionName}${userId}${`${this.collectionName}/`}${
+          `${this.parentCollectionName}${uid}${`${this.collectionName}/`}${
             category.id
           }`,
         ),
@@ -70,14 +70,12 @@ class FirebaseCategoryModel extends CategoryModel {
     }
   }
 
-  async delete(userId: string, id: string): Promise<boolean> {
+  async delete(uid: string, id: string): Promise<boolean> {
     try {
       await remove(
         ref(
           this.db,
-          `${
-            this.parentCollectionName
-          }${userId}${`${this.collectionName}/`}${id}`,
+          `${this.parentCollectionName}${uid}${`${this.collectionName}/`}${id}`,
         ),
       );
 

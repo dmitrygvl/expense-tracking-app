@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IConvertCategory } from '../../utils/convertCategory';
+import { IConvertCategory } from '../../utils/convertCategories';
 
 const initialState: IConvertCategory[] = [];
 
@@ -8,7 +8,7 @@ const categoriesSlice = createSlice({
   initialState,
   reducers: {
     addCategories: (state, action: PayloadAction<IConvertCategory[]>) => {
-      state = { ...action.payload };
+      state = action.payload;
       return state;
     },
 

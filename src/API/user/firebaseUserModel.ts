@@ -1,4 +1,4 @@
-import { Database, ref, get, set, child } from 'firebase/database';
+import { Database, ref, get, child, set } from 'firebase/database';
 
 export type IUser = {
   uid: string;
@@ -14,9 +14,9 @@ abstract class UserModel {
 class FirebaseUserModel extends UserModel {
   private db;
 
-  private collectionName;
-
   private parentCollectionName;
+
+  private collectionName;
 
   constructor(
     db: Database,
@@ -42,7 +42,7 @@ class FirebaseUserModel extends UserModel {
         return snapshot.val();
       }
 
-      throw new Error('The user with this ID does not exist.');
+      throw new Error('User with this Id was not found!');
     } catch (err) {
       console.log((err as Error).message);
       return null;
@@ -62,7 +62,10 @@ class FirebaseUserModel extends UserModel {
         },
       );
 
-      return { uid, name };
+      return {
+        uid,
+        name,
+      };
     } catch (err) {
       console.log((err as Error).message);
       return null;

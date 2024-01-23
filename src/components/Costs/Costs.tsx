@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { createCost } from '../../API/cost/cost';
 import { IRootState } from '../../store/store';
-import { addZero } from '../../utils/convertFunc';
+import { addZero } from '../../utils/helpers';
 import { costStorage } from '../../API/firebase';
 import { addCost } from '../../store/slices/costsSlice';
 import { ISubcategory } from '../../API/category/category';
@@ -20,7 +20,9 @@ const Costs: FC = () => {
     label: '',
   });
   const [date, setDate] = useState(
-    `${now.getFullYear()}-${addZero(now.getMonth())}-${addZero(now.getDate())}`,
+    `${now.getFullYear()}-${addZero(now.getMonth() + 1)}-${addZero(
+      now.getDate(),
+    )}`,
   );
   const [payment, setPayment] = useState('0');
   const [message, setMessage] = useState('');
@@ -49,25 +51,25 @@ const Costs: FC = () => {
     setSelectedCategory({ value: '', label: '' });
     setSelectedSubcategory({ value: '', label: '' });
     setDate(
-      `${now.getFullYear()}-${addZero(now.getMonth())}-${addZero(
+      `${now.getFullYear()}-${addZero(now.getMonth() + 1)}-${addZero(
         now.getDate(),
       )}`,
     );
     setPayment('0');
   };
 
-  const onFormSubmit = async (ev: FormEvent) => {
-    ev.preventDefault();
+  const onFormSubmit = async (evt: FormEvent) => {
+    evt.preventDefault();
 
     if (!selectedCategory.value) {
-      setMessage('Choose a right category');
+      setMessage('Be sure to choose a category!');
       setTimeout(() => {
         setMessage('');
       }, 3000);
       return;
     }
 
-    const expense = createCost(
+    const cost = createCost(
       new Date(date).getTime(),
       selectedCategory.value,
       selectedSubcategory.value,
@@ -75,12 +77,12 @@ const Costs: FC = () => {
     );
 
     if (user.uid) {
-      const expenseId = await costStorage.create(user.uid, expense);
+      const costId = await costStorage.create(user.uid, cost);
 
-      if (expenseId) {
-        dispatch(addCost(expense));
+      if (costId) {
+        dispatch(addCost(cost));
         clearForm();
-        setMessage('Costs added.');
+        setMessage('Costs added!');
         setTimeout(() => {
           setMessage('');
         }, 3000);
@@ -90,7 +92,7 @@ const Costs: FC = () => {
 
   return (
     <div className="_container">
-      <section className="costs">
+      <div className="costs">
         <h2 className="costs__title">Add costs:</h2>
         <form
           className="costs__form form-costs"
@@ -110,7 +112,6 @@ const Costs: FC = () => {
               }
             }}
             options={categoriesForSelection}
-            required
           />
           <label className="costs__form_label" htmlFor="subcategory">
             Subcategory:
@@ -142,7 +143,7 @@ const Costs: FC = () => {
             required
           />
           <label className="costs__form_label" htmlFor="payment">
-            Payment:
+            payment:
           </label>
           <input
             className="costs__form_input _input"
@@ -154,6 +155,7 @@ const Costs: FC = () => {
             min="0"
             step="1"
             required
+            data-testid="payment"
           />
           <p className="costs__form_message">{message}</p>
           <div className="form-costs__buttons">
@@ -172,7 +174,7 @@ const Costs: FC = () => {
             </button>
           </div>
         </form>
-      </section>
+      </div>
     </div>
   );
 };

@@ -54,9 +54,11 @@ export const convertCategoriesForStore = (
 ) => {
   const result: IConvertCategory[] = [];
 
-  Object.keys(categories).forEach((item) => {
-    result.push(convertCategoryForStore(categories[item]));
-  });
+  if (categories) {
+    Object.keys(categories).forEach((item) => {
+      result.push(convertCategoryForStore(categories[item]));
+    });
+  }
 
   return result;
 };

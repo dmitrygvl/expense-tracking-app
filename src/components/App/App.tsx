@@ -18,7 +18,7 @@ const App = () => (
         <Route path="signup" element={<Auth mode="signup" />} />
         <Route path="categories" element={<Categories />} />
         <Route path="costs" element={<Costs />} />
-        {/* <Route path="statisics" element={<Statisics />}></Route> */}
+        {/* <Route path="statistics" element={<Statistics />}> */}
       </Route>
     </Routes>
   </BrowserRouter>

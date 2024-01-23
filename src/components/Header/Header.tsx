@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '../../store/store';
-import { logOut } from '../../store/slices/authSlice';
 import { deleteUser } from '../../store/slices/userSlice';
 import { deleteCategories } from '../../store/slices/categoriesSlice';
 import { deleteCosts } from '../../store/slices/costsSlice';
-import { updateRange } from '../../store/slices/rengeSlice';
+import { updateRange } from '../../store/slices/rangeSlice';
+import { serializeQuery } from '../../utils/helpers';
 import './Header.css';
 
 const now = new Date().getTime();
@@ -14,14 +14,11 @@ const now = new Date().getTime();
 const Header: FC = () => {
   const location = useLocation();
   const user = useSelector((store: IRootState) => store.user);
+  const range = useSelector((store: IRootState) => store.range);
   const dispatch = useDispatch();
 
-  // const handleSignOut = () => {
-  //   dispatch(logOut());
-  //   dispatch(deleteUser());
+  const query = serializeQuery(range);
 
-  //   localStorage.setItem('@dmitrygvl/expense-tracking-app', '');
-  // };
   const handleSignOut = () => {
     dispatch(deleteUser());
     dispatch(
@@ -36,7 +33,7 @@ const Header: FC = () => {
 
   return (
     <>
-      <header className="header">
+      <div className="header">
         <div className="header__container header-container _container">
           <Link className="header-container__title" to={`${PREFIX}/`}>
             Expense tracking
@@ -56,23 +53,23 @@ const Header: FC = () => {
                 </Link>
                 <Link
                   className={`nav-header__link ${
-                    location.pathname === '/costSettings'
+                    location.pathname.includes('/categories')
                       ? 'nav-header__link_active'
                       : ''
                   }`}
-                  to={`${PREFIX}/costSettings`}
+                  to={`${PREFIX}/categories`}
                 >
                   CATEGORIES
                 </Link>
                 <Link
                   className={`nav-header__link ${
-                    location.pathname.includes('/reports')
+                    location.pathname.includes('/statistics')
                       ? 'nav-header__link_active'
                       : ''
                   }`}
-                  to={`${PREFIX}/reports`}
+                  to={`${PREFIX}/statistics${query}`}
                 >
-                  REPORTS
+                  STATISTICS
                 </Link>
               </>
             )}
@@ -121,7 +118,7 @@ const Header: FC = () => {
             )}
           </nav>
         </div>
-      </header>
+      </div>
       <Outlet />
     </>
   );

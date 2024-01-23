@@ -13,7 +13,7 @@ import {
 import {
   convertCategoryForStore,
   convertSubcategoriesForFirebase,
-} from '../../utils/convertCategory';
+} from '../../utils/convertCategories';
 import { deleteCostsOfDeletedCategory } from '../../store/slices/costsSlice';
 import './Categories.css';
 
@@ -22,7 +22,7 @@ const Categories: FC<Record<string, any>> = () => {
   const [categoryName, setCategoryName] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
-  const user = useSelector((st: IRootState) => st.user);
+  const user = useSelector((store: IRootState) => store.user);
   const costs = useSelector((store: IRootState) => store.costs);
   const dispatch = useDispatch();
 
@@ -40,8 +40,8 @@ const Categories: FC<Record<string, any>> = () => {
     setDescription('');
   };
 
-  const onFormSubmit = async (ev: FormEvent) => {
-    ev.preventDefault();
+  const onFormSubmit = async (evt: FormEvent) => {
+    evt.preventDefault();
 
     const category = createCategory(
       categoryName,
@@ -55,10 +55,10 @@ const Categories: FC<Record<string, any>> = () => {
     );
 
     if (categoryId) {
-      setMessage('Category added');
+      setMessage('Category added!');
       dispatch(addCategory(convertCategoryForStore(category)));
     } else {
-      setMessage('Error of category creation in Firebase.');
+      setMessage('Error of category creation in Firebase!');
     }
 
     setTimeout(() => setMessage(''), 3000);
@@ -103,7 +103,6 @@ const Categories: FC<Record<string, any>> = () => {
         onClick={() => onClickDeleteButton(category.id)}
         data-testid={`deleteCategory-${index}`}
       ></button>
-      <TrashIcon />
       {!!category.subcategories.length && (
         <ul>
           {category.subcategories.map((subcategory) => (
@@ -121,7 +120,7 @@ const Categories: FC<Record<string, any>> = () => {
   ));
 
   return (
-    <div className="_container">
+    <div className="category-container _container">
       <div className="category">
         <h2 className="category__title">Create category:</h2>
         <form
@@ -139,7 +138,7 @@ const Categories: FC<Record<string, any>> = () => {
             value={categoryName}
             name="category"
             id="category"
-            minLength={6}
+            minLength={3}
             required
             data-testid="category"
           />
@@ -162,6 +161,7 @@ const Categories: FC<Record<string, any>> = () => {
             value={description}
             name="description"
             id="description"
+            data-testid="description"
           />
           {message && <p className="category__form_message">{message}</p>}
           <div className="form-category__buttons">
@@ -182,11 +182,11 @@ const Categories: FC<Record<string, any>> = () => {
         </form>
       </div>
       <div className="category-list">
-        <h3 className="category-list__title">Created categories:</h3>
+        <h3 className="category-list__title">The existing categories:</h3>
         {categoryList.length ? (
           <ul>{categoryList}</ul>
         ) : (
-          <p className="category-list__message">There are no categories yet.</p>
+          <p className="category-list__message">No categories!</p>
         )}
       </div>
     </div>

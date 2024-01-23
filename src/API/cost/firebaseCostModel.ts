@@ -5,11 +5,11 @@ import { convertCostsForStore } from '../../utils/convertCosts';
 abstract class CostModel {
   abstract getAll(uid: string): Promise<ICost[] | null>;
 
-  abstract create(uid: string, category: ICost): Promise<string | null>;
+  abstract create(uid: string, cost: ICost): Promise<string | null>;
 
   abstract deleteCostsOfDeletedCategory(
     uid: string,
-    costId: string[],
+    costIds: string[],
   ): Promise<boolean>;
 }
 
@@ -44,7 +44,7 @@ class FirebaseCostModel extends CostModel {
         return convertCostsForStore(snapshot.val());
       }
 
-      throw new Error('No costs in firebase.');
+      throw new Error('No costs in Firebase');
     } catch (err) {
       console.log((err as Error).message);
       return null;
@@ -71,7 +71,7 @@ class FirebaseCostModel extends CostModel {
   }
 
   async deleteCostsOfDeletedCategory(
-    userId: string,
+    uid: string,
     costIds: string[],
   ): Promise<boolean> {
     try {
@@ -81,7 +81,7 @@ class FirebaseCostModel extends CostModel {
             this.db,
             `${
               this.parentCollectionName
-            }${userId}${`${this.collectionName}/`}${id}`,
+            }${uid}${`${this.collectionName}/`}${id}`,
           ),
         );
       }

@@ -20,7 +20,7 @@ const About = () => {
               <tbody>
                 <tr>
                   <td>Title:</td>
-                  <td>Cost management</td>
+                  <td>Expense tracking</td>
                 </tr>
                 <tr>
                   <td>Author:</td>
@@ -45,11 +45,11 @@ const About = () => {
               can have subcategories.
               <br />
               In each category or subcategory on a certain date you can enter
-              the amount you spent. If there are expenses in a subcategory, they
-              will be taken into account in the category.
+              the payment you spent. If there are expenses in a subcategory,
+              they will be taken into account in the category.
               <br />
-              You can also view reports for selected categories for the current
-              period of time.
+              You can also view statistics for selected categories for the
+              current period of time.
             </p>
           </div>
         </div>
