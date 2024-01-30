@@ -44,7 +44,8 @@ class FirebaseUserModel extends UserModel {
 
       throw new Error('User with this id was not found');
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }
@@ -67,7 +68,8 @@ class FirebaseUserModel extends UserModel {
         name,
       };
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }

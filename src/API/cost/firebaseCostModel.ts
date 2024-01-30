@@ -46,7 +46,8 @@ class FirebaseCostModel extends CostModel {
 
       throw new Error('No costs in Firebase');
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }
@@ -65,7 +66,8 @@ class FirebaseCostModel extends CostModel {
 
       return cost.id;
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }
@@ -88,7 +90,8 @@ class FirebaseCostModel extends CostModel {
 
       return true;
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return false;
     }
   }

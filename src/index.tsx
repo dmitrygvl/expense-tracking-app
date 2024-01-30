@@ -3,7 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import App from './App/App';
 import store from './store/store';
-import { categoryStorage, costStorage, userStorage } from './API/firebase';
+import {
+  categoryStorage,
+  costStorage,
+  userStorage,
+} from './API/firebaseConnector';
 import { addUser } from './store/slices/userSlice';
 import { addCategories } from './store/slices/categoriesSlice';
 import { addCosts } from './store/slices/costsSlice';

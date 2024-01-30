@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { createCost } from '../../API/cost/cost';
 import { IRootState } from '../../store/store';
 import { addZero } from '../../utils/helpers';
-import { costStorage } from '../../API/firebase';
+import { costStorage } from '../../API/firebaseConnector';
 import { addCost } from '../../store/slices/costsSlice';
 import { ISubcategory } from '../../API/category/category';
 import './Costs.css';

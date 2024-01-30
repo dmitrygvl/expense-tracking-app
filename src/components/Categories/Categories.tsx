@@ -2,7 +2,7 @@ import React, { FC, FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Subcategories from '../Subcategories/Subcategories';
 import { createCategory } from '../../API/category/category';
-import { categoryStorage, costStorage } from '../../API/firebase';
+import { categoryStorage, costStorage } from '../../API/firebaseConnector';
 import { IRootState } from '../../store/store';
 import { IUser } from '../../API/user/firebaseUserModel';
 import {

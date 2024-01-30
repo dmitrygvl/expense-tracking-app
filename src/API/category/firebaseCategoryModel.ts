@@ -46,7 +46,8 @@ class FirebaseCategoryModel extends CategoryModel {
 
       throw new Error('No categories in Firebase');
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }
@@ -65,7 +66,8 @@ class FirebaseCategoryModel extends CategoryModel {
 
       return category.id;
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return null;
     }
   }
@@ -81,7 +83,8 @@ class FirebaseCategoryModel extends CategoryModel {
 
       return true;
     } catch (err) {
-      console.log((err as Error).message);
+      // eslint-disable-next-line no-console
+      console.error((err as Error).message);
       return false;
     }
   }

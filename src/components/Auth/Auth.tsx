@@ -10,7 +10,7 @@ import {
   categoryStorage,
   costStorage,
   userStorage,
-} from '../../API/firebase';
+} from '../../API/firebaseConnector';
 import './Auth.css';
 import { addUser } from '../../store/slices/userSlice';
 import { addCategories } from '../../store/slices/categoriesSlice';
