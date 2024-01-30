@@ -6,6 +6,9 @@ import Auth from '../Auth/Auth';
 import About from '../About/About';
 import Categories from '../Categories/Categories';
 import Costs from '../Costs/Costs';
+import Statistics from '../Statistics/Statistics';
+import StatisticsPieChart from '../Statistics/PieChart/StatisticsPieChart';
+import StatisticsTable from '../Statistics/Table/StatisticsTable';
 import './App.css';
 
 const App = () => (
@@ -18,7 +21,10 @@ const App = () => (
         <Route path="signup" element={<Auth mode="signup" />} />
         <Route path="categories" element={<Categories />} />
         <Route path="costs" element={<Costs />} />
-        {/* <Route path="statistics" element={<Statistics />}> */}
+        <Route path="statistics" element={<Statistics />}>
+          <Route path="table" element={<StatisticsTable />} />
+          <Route path="chart" element={<StatisticsPieChart />} />
+        </Route>
       </Route>
     </Routes>
   </BrowserRouter>

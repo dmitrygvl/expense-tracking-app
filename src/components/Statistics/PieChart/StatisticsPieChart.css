@@ -1,0 +1,12 @@
+.statistics__pie-chart {
+  width: 100%;
+  height: 400px;
+  padding: 16px;
+}
+
+@media (max-width: 450px) {
+  .statistics__pie-chart {
+    width: 325px;
+    height: 325px;
+  }
+}

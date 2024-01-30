@@ -1,5 +1,4 @@
 import React, { FC, FormEvent, useState } from 'react';
-import { Trash2 as TrashIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Subcategories from '../Subcategories/Subcategories';
 import { createCategory } from '../../API/category/category';

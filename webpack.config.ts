@@ -4,7 +4,6 @@ import { resolve } from 'node:path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import pkg from './package.json';
 
@@ -17,11 +16,7 @@ const PREFIX = NODE_ENV === 'production' ? `/${pkg.name}` : '';
 const config: webpack.Configuration = {
   entry: { index: resolve(__dirname, './src/index.tsx') },
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx'],
-    fallback: {
-      os: require.resolve('os-browserify/browser'),
-      crypto: require.resolve('crypto-browserify'),
-    },
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
   output: {
     path: resolve(__dirname, 'dist'),
@@ -30,7 +25,7 @@ const config: webpack.Configuration = {
     environment: {
       arrowFunction: false,
     },
-    publicPath: NODE_ENV === 'production' ? `/${pkg.name}` : '/',
+    publicPath: NODE_ENV === 'production' ? `/${pkg.name}/` : '/',
   },
   module: {
     rules: [
@@ -43,7 +38,6 @@ const config: webpack.Configuration = {
       },
       {
         test: /\.css$/i,
-        exclude: /node_modules/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
@@ -68,14 +62,13 @@ const config: webpack.Configuration = {
     }),
     new MiniCssExtractPlugin(),
     new FaviconsWebpackPlugin('src/assets/img/favicon.png'),
-    new NodePolyfillPlugin(),
   ],
   optimization: {
     minimizer: [`...`, new CssMinimizerPlugin()],
   },
   devServer: {
     compress: true,
-    port: 9000,
+    port: 4000,
     watchFiles: ['index.html'],
     historyApiFallback: true,
   },

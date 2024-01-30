@@ -16,6 +16,7 @@
   line-height: 1.5;
   margin-top: 0;
   font-weight: 500;
+  color: #ffffffde;
 }
 
 .category__form {
@@ -28,6 +29,7 @@
 
 .category__form_label {
   padding: 10px 0;
+  color: #ffffffde;
 }
 
 .category__form_input {
@@ -65,6 +67,7 @@
 
 .category-list {
   margin: 20px 0;
+  color: #ffffffde;
 }
 
 .category-list > ul {
@@ -78,9 +81,11 @@
 
 .category-list li {
   padding: 5px 0;
+  color: #ffffffde;
 }
 .category-list__title {
   margin-bottom: 15px;
+  color: #ffffffde;
 }
 
 .category-list__category_delete-button {
@@ -89,6 +94,6 @@
   border: none;
   margin-left: 10px;
   cursor: pointer;
-
+  background: url('../../assets/img/deleteIcon.svg') no-repeat;
   background-size: contain;
 }
