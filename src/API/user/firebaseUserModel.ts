@@ -42,7 +42,7 @@ class FirebaseUserModel extends UserModel {
         return snapshot.val();
       }
 
-      throw new Error('User with this Id was not found!');
+      throw new Error('User with this id was not found');
     } catch (err) {
       console.log((err as Error).message);
       return null;

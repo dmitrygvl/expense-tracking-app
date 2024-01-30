@@ -44,7 +44,7 @@ class FirebaseCategoryModel extends CategoryModel {
         return convertCategoriesForStore(snapshot.val());
       }
 
-      throw new Error('No categories in Firebase!');
+      throw new Error('No categories in Firebase');
     } catch (err) {
       console.log((err as Error).message);
       return null;

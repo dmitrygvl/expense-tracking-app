@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import App from './components/App/App';
+import App from './App/App';
 import store from './store/store';
 import { categoryStorage, costStorage, userStorage } from './API/firebase';
 import { addUser } from './store/slices/userSlice';
@@ -27,7 +27,7 @@ window.addEventListener('load', async () => {
         store.dispatch(addUser({ uid: profile.uid, name: profile.name }));
       } else {
         throw new Error(
-          'User with given Id from LocalStorage is not found in FireBase',
+          'User with given Id from LocalStorage is not found in Firebase',
         );
       }
 
