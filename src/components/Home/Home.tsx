@@ -8,8 +8,10 @@ const Home: FC = () => {
   return (
     <div className="_container">
       <div className="home">
-        <h2>{`Welcome${user.name ? `, ${user.name}` : ''}!`}</h2>
-        <h3>This is your personal budget</h3>
+        <h2 className="home__title">{`Welcome${user.name ? `, ${user.name}` : ''}!`}</h2>
+        <h3 className="home__subtitle">
+          This is your personal budget assistant app
+        </h3>
       </div>
     </div>
   );

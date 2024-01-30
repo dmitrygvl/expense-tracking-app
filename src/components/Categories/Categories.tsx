@@ -39,8 +39,8 @@ const Categories: FC<Record<string, any>> = () => {
     setDescription('');
   };
 
-  const onFormSubmit = async (evt: FormEvent) => {
-    evt.preventDefault();
+  const onFormSubmit = async (ev: FormEvent) => {
+    ev.preventDefault();
 
     const category = createCategory(
       categoryName,
@@ -54,10 +54,10 @@ const Categories: FC<Record<string, any>> = () => {
     );
 
     if (categoryId) {
-      setMessage('Category added!');
+      setMessage('Category added 👍');
       dispatch(addCategory(convertCategoryForStore(category)));
     } else {
-      setMessage('Error of category creation in Firebase!');
+      setMessage('Error of category creation in Firebase 🙈');
     }
 
     setTimeout(() => setMessage(''), 3000);

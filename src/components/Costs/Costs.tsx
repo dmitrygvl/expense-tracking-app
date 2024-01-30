@@ -58,11 +58,11 @@ const Costs: FC = () => {
     setPayment('0');
   };
 
-  const onFormSubmit = async (evt: FormEvent) => {
-    evt.preventDefault();
+  const onFormSubmit = async (ev: FormEvent) => {
+    ev.preventDefault();
 
     if (!selectedCategory.value) {
-      setMessage('Be sure to choose a category!');
+      setMessage('Be sure to choose a category ⚠️');
       setTimeout(() => {
         setMessage('');
       }, 3000);
@@ -82,7 +82,7 @@ const Costs: FC = () => {
       if (costId) {
         dispatch(addCost(cost));
         clearForm();
-        setMessage('Costs added!');
+        setMessage('Cost added 👍');
         setTimeout(() => {
           setMessage('');
         }, 3000);

@@ -6,10 +6,11 @@
 }
 
 .costs__title {
-  margin-bottom: 0;
+  padding-top: 20px;
   line-height: 1.5;
   margin-top: 0;
   font-weight: 500;
+  color: #ffffffde;
 }
 
 .costs__form {
@@ -22,6 +23,7 @@
 
 .costs__form_label {
   padding: 10px 0;
+  color: #ffffffde;
 }
 
 .costs__form_input {
