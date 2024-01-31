@@ -48,6 +48,7 @@ window.addEventListener('load', async () => {
       }
     }
   } catch (err) {
-    console.log((err as Error).message);
+    // eslint-disable-next-line no-console
+    console.error((err as Error).message);
   }
 });
