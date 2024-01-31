@@ -1,0 +1,123 @@
+.about {
+  margin-top: 20px;
+  width: auto;
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1.75rem * 2);
+}
+
+@media (min-width: 576px) {
+  .about {
+    width: calc(100% - 10%);
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.about__content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: black;
+  pointer-events: auto;
+  background-color: white;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.175);
+  border-radius: 0.5rem;
+  outline: 0;
+}
+
+.content-about__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(0.5rem - 1px);
+  border-top-right-radius: calc(0.5rem - 1px);
+}
+
+.content-about__header_title {
+  margin-bottom: 0;
+  line-height: 1.5;
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.content-about__body {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  position: relative;
+  flex: 1 1 auto;
+  padding: 0 1.5rem;
+}
+
+.content-about__body img {
+  padding: 10px;
+  transition: transform 0.7s linear;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+.content-about__body img:hover {
+  transform: scale(1.15);
+}
+
+.content-about__body table {
+  border-spacing: 1em 0.5em;
+}
+
+.content-about__body * {
+  margin: 15px 0;
+}
+
+@media (max-width: 455px) {
+  .content-about__body {
+    padding: 10px;
+  }
+}
+
+.content-about__footer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: calc(1rem - 0.5rem * 0.5);
+  border-top: 1px solid #dee2e6;
+  border-bottom-right-radius: calc(0.5rem - 1px);
+  border-bottom-left-radius: calc(0.5rem - 1px);
+}
+
+.content-about__footer p {
+  text-align: justify;
+  text-indent: 25px;
+  line-height: 140%;
+  margin: 10px 0;
+}
+
+@media (max-width: 400px) {
+  .content-about__body table {
+    margin: 0 auto;
+  }
+  .content-about__body td,
+  .content-about__footer p {
+    font-size: 16px;
+  }
+}
+
+.github {
+  color: rgb(130, 173, 230);
+  cursor: pointer;
+  transition: all 0.1s linear;
+}
+
+.github:hover {
+  color: rgb(19, 87, 175);
+  text-decoration: underline;
+}
